@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import RideTab from "../components/RideTab";
 
 function index({ user, rides }) {
+  
   //filters the array for past rides
   const pastRides = rides.filter((ride) => new Date() > new Date(ride.date));
 
@@ -51,7 +52,7 @@ function index({ user, rides }) {
       h={"100vh"}
       maxW="100%"
       w={"100%"}
-      overflow="scroll"
+      overflowY="scroll"
     >
       <Navbar user={user} />
       <RideTab

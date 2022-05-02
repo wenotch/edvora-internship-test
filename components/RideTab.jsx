@@ -41,17 +41,23 @@ function RideTab({ pastRides, futureRides, nearestRides, user, rides }) {
       );
       setFilterNearestRides(filteredNear);
 
-      // //filters the array for future rides
-      // const filteredFuture = filterFutureRides.filter(
-      //   (ride) => ride.city || ride.state === e.target.value
-      // );
-      // setFilterFutureRides(filteredFuture);
+      //filters the array for future rides
+      const filteredFuture = filterFutureRides.filter(
+        (ride) =>
+          ride.state === stateValue ||
+          ride.city === cityValue ||
+          (ride.state === stateValue && ride.city === cityValue)
+      );
+      setFilterFutureRides(filteredFuture);
 
-      // //filters the array for past rides
-      // const filteredPast = filterPastRides.filter(
-      //   (ride) => ride.city || ride.state === e.target.value
-      // );
-      // setFilterPastRides(filteredPast);
+      //filters the array for past rides
+      const filteredPast = filterPastRides.filter(
+        (ride) =>
+          ride.state === stateValue ||
+          ride.city === cityValue ||
+          (ride.state === stateValue && ride.city === cityValue)
+      );
+      setFilterPastRides(filteredPast);
     }
   }, [cityValue, stateValue]);
 
