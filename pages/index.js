@@ -24,6 +24,26 @@ function index({ user, rides }) {
     return dateB - dateA;
   });
 
+  // create array of rides with the distances inside in each object
+  const detailedRide = rides.map((ride) => {
+    //calculating distance
+    var station_path = ride.station_path,
+      user_station_code = user?.station_code;
+
+    var closest = station_path?.reduce(function (prev, curr) {
+      return Math.abs(curr - user_station_code) <
+        Math.abs(prev - user_station_code)
+        ? curr
+        : prev;
+    });
+
+    return { ...ride, distance: Math.abs(closest - user_station_code) };
+  });
+
+  const nearestRides = detailedRide.sort((a, b) => {
+    return a.distance - b.distance;
+  });
+
   return (
     <Box
       bg="brand.background"
@@ -37,6 +57,8 @@ function index({ user, rides }) {
       <RideTab
         pastRides={sortedPastedRides}
         futureRides={sortedfutureRides}
+        nearestRides={nearestRides}
+        rides={rides}
         user={user}
       />
     </Box>

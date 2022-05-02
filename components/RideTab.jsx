@@ -1,12 +1,8 @@
 import {
-  Box,
   Button,
-  Flex,
   Icon,
-  Input,
   Menu,
   MenuButton,
-  MenuItem,
   MenuList,
   Select,
   Tab,
@@ -21,7 +17,43 @@ import { BsFilterLeft } from "react-icons/bs";
 import RideCard from "./RideCard";
 import { IoMdArrowDropdown } from "react-icons/io";
 
-function RideTab({ pastRides, futureRides, user }) {
+function RideTab({ pastRides, futureRides, nearestRides, user, rides }) {
+  const [filterNearestRides, setFilterNearestRides] =
+    React.useState(nearestRides);
+  const [filterFutureRides, setFilterFutureRides] = React.useState(futureRides);
+  const [filterPastRides, setFilterPastRides] = React.useState(pastRides);
+
+  const handleFilter = (e) => {
+    if (e.target.value === "all") {
+      setFilterNearestRides(nearestRides);
+      setFilterFutureRides(futureRides);
+      setFilterPastRides(pastRides);
+    } else {
+      //filters the array for near rides
+      const filteredNear = filterNearestRides.filter((ride) => {
+        ride.city || ride.state === e.target.value;
+      });
+      setFilterNearestRides(filteredNear);
+
+      //filters the array for future rides
+      const filteredFuture = filterFutureRides.filter((ride) => {
+        ride.city || ride.state === e.target.value;
+      });
+      setFilterFutureRides(filteredFuture);
+
+      //filters the array for past rides
+      const filteredPast = filterPastRides.filter((ride) => {
+        ride.city || ride.state === e.target.value;
+      });
+      setFilterPastRides(filteredPast);
+    }
+  };
+
+  // filter all cities and remove duplicates
+  const cities = rides.filter((item, index) => rides.indexOf(item) === index);
+
+  // filter all states and remove duplicates
+  const states = rides.filter((item, index) => rides.indexOf(item) === index);
   return (
     <Tabs
       px="43px"
@@ -65,7 +97,7 @@ function RideTab({ pastRides, futureRides, user }) {
             outline: "none",
           }}
         >
-          Upcoming rides ({futureRides.length})
+          Upcoming rides ({filterFutureRides.length})
         </Tab>
         <Tab
           p={"0"}
@@ -83,7 +115,7 @@ function RideTab({ pastRides, futureRides, user }) {
             outline: "none",
           }}
         >
-          Past rides ({pastRides.length})
+          Past rides ({filterPastRides.length})
         </Tab>
         <Menu pos="relative">
           <MenuButton
@@ -129,21 +161,53 @@ function RideTab({ pastRides, futureRides, user }) {
               color={"white"}
               bg="#232323"
               border="none"
-              placeholder={"Select"}
               icon={<IoMdArrowDropdown />}
+              onChange={handleFilter}
+              _placeholder={{ color: "black", backgroundColor: "white" }}
             >
-              <option>anambra</option>
+              <option
+                style={{ color: "black", backgroundColor: "white" }}
+                value={"all"}
+              >
+                All States
+              </option>{" "}
+              {states
+                .sort((a, b) => a - b)
+                .map((state) => (
+                  <option
+                    style={{ color: "black", backgroundColor: "white" }}
+                    value={state.state}
+                  >
+                    {state.state}
+                  </option>
+                ))}
             </Select>
             <Select
               mt={"20px"}
               fontSize="17px"
               color={"white"}
               bg="#232323"
+              onChange={handleFilter}
               border="none"
-              placeholder={"City"}
               icon={<IoMdArrowDropdown />}
+              _placeholder={{ color: "black", backgroundColor: "white" }}
             >
-              <option>anambra</option>
+              <option
+                style={{ color: "black", backgroundColor: "white" }}
+                value="all"
+              >
+                All Cities
+              </option>
+              {cities
+                .sort((a, b) => a - b)
+                .map((city) => (
+                  <option
+                    style={{ color: "black", backgroundColor: "white" }}
+                    value={city.city}
+                  >
+                    {city.city}
+                  </option>
+                ))}
             </Select>
           </MenuList>
         </Menu>
@@ -151,12 +215,10 @@ function RideTab({ pastRides, futureRides, user }) {
 
       <TabPanels>
         <TabPanel p="0">
-          <RideCard />
-        </TabPanel>
-        <TabPanel p="0">
-          {futureRides.length > 0 &&
-            futureRides.map((ride) => (
+          {filterNearestRides.length > 0 &&
+            filterNearestRides.map((ride) => (
               <RideCard
+                key={ride.id + Math.random()}
                 id={ride.id}
                 date={ride.date}
                 station_code={ride.origin_station_code}
@@ -169,13 +231,34 @@ function RideTab({ pastRides, futureRides, user }) {
             ))}
 
           {futureRides.length === 0 && (
+            <Text color={"white"}>No Nearest Ride</Text>
+          )}
+        </TabPanel>
+        <TabPanel p="0">
+          {filterFutureRides.length > 0 &&
+            filterFutureRides.map((ride) => (
+              <RideCard
+                key={ride.id + Math.random()}
+                id={ride.id}
+                date={ride.date}
+                station_code={ride.origin_station_code}
+                state={ride.state}
+                city={ride.city}
+                station_path={ride.station_path}
+                url={ride.map_url}
+                user={user}
+              />
+            ))}
+
+          {filterFutureRides.length === 0 && (
             <Text color={"white"}>No Future Ride</Text>
           )}
         </TabPanel>
         <TabPanel p="0">
-          {pastRides.length > 0 &&
-            pastRides.map((ride) => (
+          {filterPastRides.length > 0 &&
+            filterPastRides.map((ride) => (
               <RideCard
+                key={ride.id + Math.random()}
                 id={ride.id}
                 date={ride.date}
                 station_code={ride.origin_station_code}
@@ -186,8 +269,8 @@ function RideTab({ pastRides, futureRides, user }) {
                 user={user}
               />
             ))}{" "}
-          {pastRides.length === 0 && (
-            <Text color={"white"}>No Future Ride</Text>
+          {filterPastRides.length === 0 && (
+            <Text color={"white"}>No Past Ride</Text>
           )}
         </TabPanel>
       </TabPanels>

@@ -32,9 +32,13 @@ function RideCard({
       mb="12px"
     >
       <Flex align={""}>
-        <Box rounded={"5px"} width={"296px"} height="168px" pos={"relative"}>
-          <Image src={url ? url : "/map-img.png"} layout="fill" />
-        </Box>
+        <Image
+          src={url ? url : "/map-img.png"}
+          width={"296px"}
+          height="168px"
+          style={{ borderRadius: "5px" }}
+        />
+
         <Box ml={"44px"}>
           <Text
             fontSize={"18px"}
