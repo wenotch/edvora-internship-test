@@ -12,41 +12,55 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BsFilterLeft } from "react-icons/bs";
 import RideCard from "./RideCard";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 function RideTab({ pastRides, futureRides, nearestRides, user, rides }) {
-  const [filterNearestRides, setFilterNearestRides] =
-    React.useState(nearestRides);
-  const [filterFutureRides, setFilterFutureRides] = React.useState(futureRides);
-  const [filterPastRides, setFilterPastRides] = React.useState(pastRides);
+  const [filterNearestRides, setFilterNearestRides] = useState(nearestRides);
+  const [filterFutureRides, setFilterFutureRides] = useState(futureRides);
+  const [filterPastRides, setFilterPastRides] = useState(pastRides);
 
-  const handleFilter = (e) => {
-    if (e.target.value === "all") {
+  const [stateValue, setStateValue] = useState("");
+  const [cityValue, setCityValue] = useState("");
+
+  //usestate to handle filter of city and state
+  useEffect(() => {
+    if (stateValue === "" && cityValue === "") {
       setFilterNearestRides(nearestRides);
       setFilterFutureRides(futureRides);
       setFilterPastRides(pastRides);
     } else {
       //filters the array for near rides
-      const filteredNear = filterNearestRides.filter((ride) => {
-        ride.city || ride.state === e.target.value;
-      });
+      const filteredNear = filterNearestRides.filter(
+        (ride) =>
+          ride.state === stateValue ||
+          ride.city === cityValue ||
+          (ride.state === stateValue && ride.city === cityValue)
+      );
       setFilterNearestRides(filteredNear);
 
-      //filters the array for future rides
-      const filteredFuture = filterFutureRides.filter((ride) => {
-        ride.city || ride.state === e.target.value;
-      });
-      setFilterFutureRides(filteredFuture);
+      // //filters the array for future rides
+      // const filteredFuture = filterFutureRides.filter(
+      //   (ride) => ride.city || ride.state === e.target.value
+      // );
+      // setFilterFutureRides(filteredFuture);
 
-      //filters the array for past rides
-      const filteredPast = filterPastRides.filter((ride) => {
-        ride.city || ride.state === e.target.value;
-      });
-      setFilterPastRides(filteredPast);
+      // //filters the array for past rides
+      // const filteredPast = filterPastRides.filter(
+      //   (ride) => ride.city || ride.state === e.target.value
+      // );
+      // setFilterPastRides(filteredPast);
     }
+  }, [cityValue, stateValue]);
+
+  const handleFilterCity = (e) => {
+    setCityValue(e.target.value);
+  };
+
+  const handleFilterState = (e) => {
+    setStateValue(e.target.value);
   };
 
   // filter all cities and remove duplicates
@@ -162,7 +176,7 @@ function RideTab({ pastRides, futureRides, nearestRides, user, rides }) {
               bg="#232323"
               border="none"
               icon={<IoMdArrowDropdown />}
-              onChange={handleFilter}
+              onChange={handleFilterState}
               _placeholder={{ color: "black", backgroundColor: "white" }}
             >
               <option
@@ -175,6 +189,7 @@ function RideTab({ pastRides, futureRides, nearestRides, user, rides }) {
                 .sort((a, b) => a - b)
                 .map((state) => (
                   <option
+                    key={state.state}
                     style={{ color: "black", backgroundColor: "white" }}
                     value={state.state}
                   >
@@ -187,7 +202,7 @@ function RideTab({ pastRides, futureRides, nearestRides, user, rides }) {
               fontSize="17px"
               color={"white"}
               bg="#232323"
-              onChange={handleFilter}
+              onChange={handleFilterCity}
               border="none"
               icon={<IoMdArrowDropdown />}
               _placeholder={{ color: "black", backgroundColor: "white" }}
@@ -202,6 +217,7 @@ function RideTab({ pastRides, futureRides, nearestRides, user, rides }) {
                 .sort((a, b) => a - b)
                 .map((city) => (
                   <option
+                    key={city.city}
                     style={{ color: "black", backgroundColor: "white" }}
                     value={city.city}
                   >
