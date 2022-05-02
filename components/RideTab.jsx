@@ -21,7 +21,7 @@ import { BsFilterLeft } from "react-icons/bs";
 import RideCard from "./RideCard";
 import { IoMdArrowDropdown } from "react-icons/io";
 
-function RideTab() {
+function RideTab({ pastRides, futureRides, user }) {
   return (
     <Tabs
       px="43px"
@@ -65,7 +65,7 @@ function RideTab() {
             outline: "none",
           }}
         >
-          Upcoming rides (4)
+          Upcoming rides ({futureRides.length})
         </Tab>
         <Tab
           p={"0"}
@@ -83,9 +83,9 @@ function RideTab() {
             outline: "none",
           }}
         >
-          Past rides (2)
+          Past rides ({pastRides.length})
         </Tab>
-        <Menu>
+        <Menu pos="relative">
           <MenuButton
             as={Button}
             _active={{ bg: "brand.black", color: "white" }}
@@ -107,7 +107,13 @@ function RideTab() {
           >
             Filter
           </MenuButton>
-          <MenuList bg="brand.black" border={"none"} px="30px" py="23px">
+          <MenuList
+            bg="brand.black"
+            border={"none"}
+            px="30px"
+            py="23px"
+            w={"228px"}
+          >
             <Text
               fontSize={"20px"}
               fontWeight="300"
@@ -148,10 +154,41 @@ function RideTab() {
           <RideCard />
         </TabPanel>
         <TabPanel p="0">
-          <p>two!</p>
+          {futureRides.length > 0 &&
+            futureRides.map((ride) => (
+              <RideCard
+                id={ride.id}
+                date={ride.date}
+                station_code={ride.origin_station_code}
+                state={ride.state}
+                city={ride.city}
+                station_path={ride.station_path}
+                url={ride.map_url}
+                user={user}
+              />
+            ))}
+
+          {futureRides.length === 0 && (
+            <Text color={"white"}>No Future Ride</Text>
+          )}
         </TabPanel>
         <TabPanel p="0">
-          <p>three!</p>
+          {pastRides.length > 0 &&
+            pastRides.map((ride) => (
+              <RideCard
+                id={ride.id}
+                date={ride.date}
+                station_code={ride.origin_station_code}
+                state={ride.state}
+                city={ride.city}
+                station_path={ride.station_path}
+                url={ride.map_url}
+                user={user}
+              />
+            ))}{" "}
+          {pastRides.length === 0 && (
+            <Text color={"white"}>No Future Ride</Text>
+          )}
         </TabPanel>
       </TabPanels>
     </Tabs>

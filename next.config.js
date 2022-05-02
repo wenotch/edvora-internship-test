@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
+  // mode: 'production',
+  images: {
+    domains: ["picsum.photos"],
+  },
   reactStrictMode: true,
-}
-
-module.exports = nextConfig
+};

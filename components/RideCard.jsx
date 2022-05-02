@@ -2,16 +2,39 @@ import { background, Box, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
 
-function RideCard() {
+function RideCard({
+  id,
+  date,
+  station_code,
+  city,
+  state,
+  station_path,
+  url,
+  user,
+}) {
+  //calculating distance
+  var station_path = station_path,
+    user_station_code = user?.station_code;
+
+  var closest = station_path?.reduce(function (prev, curr) {
+    return Math.abs(curr - user_station_code) <
+      Math.abs(prev - user_station_code)
+      ? curr
+      : prev;
+  });
+
   return (
     <Flex
       p={"30px"}
       bg="#171717"
       rounded={"10px"}
       justifyContent="space-between"
+      mb="12px"
     >
       <Flex align={""}>
-        <Image src="/map-img.png" width={"296px"} height="148px" />
+        <Box rounded={"5px"} width={"296px"} height="168px" pos={"relative"}>
+          <Image src={url ? url : "/map-img.png"} layout="fill" />
+        </Box>
         <Box ml={"44px"}>
           <Text
             fontSize={"18px"}
@@ -21,7 +44,7 @@ function RideCard() {
           >
             Ride Id :{" "}
             <Text as={"span"} color="white">
-              002
+              {id}
             </Text>
           </Text>
           <Text
@@ -32,7 +55,7 @@ function RideCard() {
           >
             Origin Station :{" "}
             <Text as={"span"} color="white">
-              002
+              {station_code}
             </Text>
           </Text>
           <Text
@@ -43,7 +66,7 @@ function RideCard() {
           >
             station_path :{" "}
             <Text as={"span"} color="white">
-              002
+              {/* print array as string */}[{station_path?.toString()}]
             </Text>
           </Text>
           <Text
@@ -54,7 +77,7 @@ function RideCard() {
           >
             Date :{" "}
             <Text as={"span"} color="white">
-              002
+              {date}
             </Text>
           </Text>
           <Text
@@ -65,7 +88,7 @@ function RideCard() {
           >
             Distance :{" "}
             <Text as={"span"} color="white">
-              002
+              {Math.abs(closest - user_station_code)}
             </Text>
           </Text>
         </Box>
@@ -82,7 +105,7 @@ function RideCard() {
           ml={"24px"}
         >
           <Text fontSize="12px" fontWeight={500}>
-            City Name
+            {city}
           </Text>
         </Box>
 
@@ -97,7 +120,7 @@ function RideCard() {
           ml={"24px"}
         >
           <Text fontSize="12px" fontWeight={500}>
-            State Name
+            {state}
           </Text>
         </Box>
       </Flex>
