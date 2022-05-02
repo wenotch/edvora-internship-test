@@ -3,7 +3,9 @@ import "../styles/globals.css";
 
 const colors = {
   brand: {
-    yellow: "red",
+    background: "#292929",
+    gray: "#D0CBCB",
+    black: "#101010",
   },
 };
 
